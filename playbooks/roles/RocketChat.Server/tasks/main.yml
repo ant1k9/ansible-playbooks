@@ -1,0 +1,110 @@
+---
+# tasks/main.yml: Main tasks for RocketChat.Ansible
+
+  - name: Ensure APT cache has been updated recently
+    apt:
+      update_cache: yes
+    when: ansible_pkg_mgr == "apt"
+
+  - name: Prepare packages
+    shell: |
+      apt-get install -y curl && curl -sL https://deb.nodesource.com/setup_12.x | bash -
+      apt-get install -y build-essential nodejs graphicsmagick
+      npm install -g inherits n && n 12.18.4
+
+  - name: Ensure the Rocket.Chat service group is present
+    group:
+      name: "{{ rocket_chat_service_group }}"
+      state: present
+      system: true
+
+  - name: Ensure the Rocket.Chat service user is present
+    user:
+      comment: Rocket.Chat Service User
+      name: "{{ rocket_chat_service_user }}"
+      group: "{{ rocket_chat_service_group }}"
+      home: "{{ rocket_chat_application_path }}"
+      createhome: true
+      shell: /bin/false
+      state: present
+      system: true
+
+  - name: Ensure Rocket.Chat dependencies are installed
+    package:
+      name: "{{ rocket_chat_dep_packages }}"
+      state: present
+    retries: 2
+
+  - name: Ensure n (NodeJS) is installed
+    npm:
+      name: n
+      global: true
+      executable: "{{ rocket_chat_original_npm }}"
+    ignore_errors: yes
+
+  - name: "Configure /etc/hosts"
+    lineinfile:
+      dest: /etc/hosts
+      line:  "127.0.0.1    {{ ansible_fqdn }}    {{ ansible_hostname }}"
+      regexp: '^127.0.0.1'
+
+  - name: Check to see if this is the initial Rocket.Chat deployment
+    stat:
+      path: "{{ rocket_chat_application_path }}/bundle"
+    register: rocket_chat_deploy_state
+
+      rocket_chat_upgraded: false
+
+  - name: Fetch the Rocket.Chat binary tarball
+    get_url:
+      url: "{{ rocket_chat_tarball_remote }}"
+      dest: "{{ rocket_chat_application_path }}/rocket.chat-{{ rocket_chat_version }}.tgz"
+    register: result
+    retries: 3
+
+  - meta: flush_handlers
+
+  - name: Unpack the Rocket.Chat binary tarball
+    unarchive:
+      copy: false
+      src: "{{ rocket_chat_application_path }}/rocket.chat-{{ rocket_chat_version }}.tgz"
+      dest: "{{ rocket_chat_application_path }}"
+      creates: "{{ rocket_chat_application_path }}/bundle"
+    tags: build
+
+  - name: Install Rocket.Chat via NPM
+    npm:
+      state: present
+      path: "{{ rocket_chat_application_path }}/bundle/programs/server"
+      executable: "{{ rocket_chat_original_npm }}"
+    tags: build
+
+  - name: Ensure the Rocket.Chat application data permissions are correct
+    file:
+      path: "{{ rocket_chat_application_path }}"
+      state: directory
+      owner: "{{ rocket_chat_service_user }}"
+      group: "{{ rocket_chat_service_user }}"
+      recurse: true
+    tags: build
+
+  - name: Deploy the Rocket.Chat service file
+    template:
+      src: "{{ rocket_chat_service_template.src }}"
+      dest: "{{ rocket_chat_service_template.dest }}"
+    notify:
+      - Update the Rocket.Chat service configuration
+      - Restart the Rocket.Chat service
+    tags: service
+
+  - meta: flush_handlers
+
+  - name: Ensure the Rocket.Chat service is running/enabled
+    service: name=rocketchat state=started enabled=true
+    tags: service
+
+  - include: nginx.yml
+    tags: nginx
+
+  - include: certbot.yml
+    tags: certbot

@@ -1,0 +1,14 @@
+---
+# tasks/certbot.yml: Issue valid https certificates
+
+  - name: Ensure Nginx is present
+    shell: |
+      apt install snap snapd
+      apt remove certbot
+      snap install core
+      snap refresh core
+      snap install --classic certbot
+      ln -s /snap/bin/certbot /usr/bin/certbot
+      certbot --nginx
+      nginx -s reload
+      systemctl restart rocketchat.service

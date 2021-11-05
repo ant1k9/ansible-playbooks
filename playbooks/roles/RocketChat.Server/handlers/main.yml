@@ -1,0 +1,7 @@
+---
+# handlers/main.yml: Handlers for RocketChat.Ansible
+  - name: Reload the Nginx service
+    service: name=nginx state=reloaded
+
+  - name: Restart the Rocket.Chat service
+    service: name=rocketchat state=restarted

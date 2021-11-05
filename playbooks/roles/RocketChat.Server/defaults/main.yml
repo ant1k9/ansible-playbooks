@@ -1,0 +1,17 @@
+---
+# defaults/main.yml: Defaults for RocketChat.Ansible
+rocket_chat_application_path: /var/lib/rocket.chat
+rocket_chat_version: latest
+rocket_chat_tarball_remote: https://releases.rocket.chat/{{ rocket_chat_version }}/download
+rocket_chat_service_user: rocketchat
+rocket_chat_service_group: rocketchat
+rocket_chat_service_host: "{{ ansible_fqdn }}"
+rocket_chat_service_port: 3000
+rocket_chat_mongodb_server: ""
+
+# nginx settings
+rocket_chat_include_nginx: true
+rocket_chat_nginx_enable_pfs: true
+rocket_chat_nginx_generate_pfs_key: true
+rocket_chat_nginx_pfs_key_numbits: 2048
+rocket_chat_nginx_pfs_key_path: /etc/nginx/rocket_chat.pem
