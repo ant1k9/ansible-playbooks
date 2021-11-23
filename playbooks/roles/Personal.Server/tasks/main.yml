@@ -15,6 +15,7 @@
       - vim
       - python3-pip
       - make
+    become: yes
 
   - name: Install python packages
     shell: |
@@ -34,18 +35,33 @@
 
   - name: Create bin directory for user
     file:
-      dest: /home/{{ user }}/bin
+      dest: {{ home_bin }}
       state: directory
 
   - name: Add bin to path
     shell: |
-      test -z "$(grep '{{ home_bin }}' {{ home }}/.bashrc)" &&
-        echo "export PATH=$PATH:{{ home_bin }}" >> {{ home }}/.bashrc
-      test -z "$(grep '{{ home_bin }}' {{ home }}/.config/fish/config.fish)" &&
-        echo "export PATH=$PATH:{{ home_bin }}" >> {{ home }}/.config/fish/config.fish
+      test -z "$(grep '{{ home_bin }}' ~/.bashrc)" &&
+        echo "export PATH=$PATH:{{ home_bin }}" >> ~/.bashrc
+      test -z "$(grep '{{ home_bin }}' ~/.config/fish/config.fish)" &&
+        echo "export PATH=$PATH:{{ home_bin }}" >> ~/.config/fish/config.fish
     ignore_errors: yes
 
   - name: Install rotate-backups
     shell:
       cmd: make rotate-backups && mv deposit-rotate-backups {{ home_bin }}/rotate-backups
       chdir: deposit-watcher
+
+  - include: misc.yml
+    tags: misc
+
+  - include: blogs-notifier.yml
+    tags: blogs-notifier
+
+  - include: taskfile.yml
+    tags: taskfile
+
+  - include: taskd.yml
+    tags: taskd
+
+  - include: openvpn.yml
+    tags: openvpn

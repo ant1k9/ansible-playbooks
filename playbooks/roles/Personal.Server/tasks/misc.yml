@@ -1,0 +1,12 @@
+---
+
+  - name: Install misc utilties
+    shell:
+      cmd: |
+        mkdir -p ~/.config/fish/completions
+        ./install.fish misc
+        ./install.fish dropbox
+        ./install.fish newsletter
+      chdir: misc
+
+  # TODO: download the latest dump for links db

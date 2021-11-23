@@ -1,0 +1,14 @@
+---
+  - name: Install packages
+    apt:
+      name: "{{ item }}"
+      update_cache: yes
+      state: present
+    with_items:
+      - g++
+      - libgnutls28-dev
+      - uuid-dev
+      - cmake
+    become: yes
+
+  # TODO: config server by instruction https://gothenburgbitfactory.github.io/taskserver-setup/

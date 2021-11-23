@@ -4,9 +4,12 @@ deploy-rocket:
 
 .PHONY: personal-server
 personal-server:
-	@ansible-playbook -i playbooks/inventory playbooks/personal_server.yml -v --become
+	@ansible-playbook -i playbooks/inventory playbooks/personal_server.yml -v
 
 .PHONY: personal-server-local
 personal-server-local:
-	@ansible-playbook -i playbooks/inventory playbooks/personal_server.yml -v --become \
-		--ssh-common-args="-i  ./tmp/.vagrant/machines/default/libvirt/private_key -l vagrant"
+	@ansible-playbook -i playbooks/inventory playbooks/personal_server.yml -v \
+		--ssh-common-args="-i  ./tmp/.vagrant/machines/default/libvirt/private_key -l vagrant" \
+		-e github_token=${GITHUB_TOKEN} \
+		-e dropbox_refresh_token=${DROPBOX_REFRESH_TOKEN} \
+		-e dropbox_credentials=${DROPBOX_CREDENTIALS}

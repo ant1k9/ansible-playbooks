@@ -1,0 +1,25 @@
+---
+
+  - name: Install go-task/task
+    shell:
+      cmd: sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d
+
+  - name: Set crons
+    ansible.builtin.cron:
+      name: "check dirs"
+      minute: "20"
+      hour: "19"
+      job: "{{ home_bin }}/task -t ~/.config/task/Taskfile.yml load_cloud_data &>> /tmp/log.err"
+
+  - name: Get private Taskfile.yml
+    ansible.builtin.git:
+      repo: https://{{ github_user }}:{{ github_token }}@github.com/{{ github_user }}/go-task-config
+      dest: "~/.config/task"
+
+  - name: Prepare .env for taskfile
+    ansible.builtin.template:
+      src: templates/taskfile.env
+      dest: "~/.config/task/.env"
+      owner: "{{ user }}"
+      group: "{{ user }}"      
+      mode: "0644"
