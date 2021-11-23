@@ -1,0 +1,6 @@
+---
+  - name: Apply the Personal.Server role to all personal
+    hosts: personal
+
+    roles:
+      - Personal.Server

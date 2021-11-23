@@ -1,0 +1,51 @@
+---
+# tasks/main.yml: Main tasks for PersonalServer.Ansible
+
+  - name: Install packages
+    apt:
+      name: "{{ item }}"
+      update_cache: yes
+      state: present
+    with_items:
+      - git
+      - fish
+      - golang
+      - python
+      - sqlite3
+      - vim
+      - python3-pip
+      - make
+
+  - name: Install python packages
+    shell: |
+      pip install "{{ item }}"
+    with_items:
+      - litecli
+      - flask
+
+  - name: Clone repos
+    ansible.builtin.git:
+      repo: "{{ item }}"
+      dest: "{{ item | regex_replace('^.*/(.*)$', '\\1') }}"
+    with_items:
+      - https://github.com/ant1k9/deposit-watcher
+      - https://github.com/ant1k9/misc
+      - https://github.com/ant1k9/blog-notifier
+
+  - name: Create bin directory for user
+    file:
+      dest: /home/{{ user }}/bin
+      state: directory
+
+  - name: Add bin to path
+    shell: |
+      test -z "$(grep '{{ home_bin }}' {{ home }}/.bashrc)" &&
+        echo "export PATH=$PATH:{{ home_bin }}" >> {{ home }}/.bashrc
+      test -z "$(grep '{{ home_bin }}' {{ home }}/.config/fish/config.fish)" &&
+        echo "export PATH=$PATH:{{ home_bin }}" >> {{ home }}/.config/fish/config.fish
+    ignore_errors: yes
+
+  - name: Install rotate-backups
+    shell:
+      cmd: make rotate-backups && mv deposit-rotate-backups {{ home_bin }}/rotate-backups
+      chdir: deposit-watcher

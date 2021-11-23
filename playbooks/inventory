@@ -1,2 +1,4 @@
 [chat_servers]
-hyperchat.ml
+
+[personal]
+192.168.122.106
