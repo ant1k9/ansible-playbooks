@@ -30,7 +30,6 @@
       repo: "{{ item }}"
       dest: "{{ item | regex_replace('^.*/(.*)$', '\\1') }}"
     with_items:
-      - https://github.com/ant1k9/deposit-watcher
       - https://github.com/ant1k9/misc
       - https://github.com/ant1k9/blog-notifier
 
@@ -46,8 +45,3 @@
       test -z "$(grep '{{ home_bin }}' ~/.config/fish/config.fish)" &&
         echo -e "export PATH=$PATH:{{ home_bin }}\nexport EDITOR=vim" >> ~/.config/fish/config.fish
     ignore_errors: yes
-
-  - name: Install rotate-backups
-    shell:
-      cmd: make rotate-backups && mv deposit-rotate-backups {{ home_bin }}/rotate-backups
-      chdir: deposit-watcher

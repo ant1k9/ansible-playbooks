@@ -12,7 +12,8 @@
   - name: Install additional utilities
     shell:
       cmd: |
-        GOBIN=~/bin go get github.com/ericchiang/pup
+        GOBIN={{ home_bin }} go get github.com/ericchiang/pup
+        GOBIN={{ home_bin }} go get github.com/ant1k9/deposit-watcher/cmd/rotate-backups
 
   - name: Download the latest links db dump
     shell:
