@@ -1,3 +1,29 @@
 ---
 
-  # TODO: download the latest dump for blogs db
+  - name: Install python packages
+    shell: |
+      pip install -r ~/blog-notifier/requirements.txt
+
+  - name: Download the latest links db dump
+    shell:
+      cmd: |
+        ~/bin/gotask -t ~/.config/task/Taskfile.yml update-token
+        DUMP_FILE=$( \
+          curl -X POST https://api.dropboxapi.com/2/files/list_folder \
+            -H "Authorization: Bearer $(cat /tmp/token)" \
+            -H "Content-Type: application/json" \
+            -d '{"path": "/blog-notifier"}' \
+            | jq '.entries | last | .path_lower' | tr -d '"'
+        )
+        curl -X POST https://content.dropboxapi.com/2/files/download \
+          -H "Authorization: Bearer $(cat /tmp/token)" \
+          -H "Dropbox-API-Arg: {\"path\": \"$DUMP_FILE\"}" \
+          -o /tmp/blogs.db.zip
+
+  - name: Extract blogs.db archive
+    ansible.builtin.unarchive:
+      src: /tmp/blogs.db.zip
+      dest: ~/blog-notifier
+      remote_src: yes
+
+  # TODO: provide credentials for syncronization

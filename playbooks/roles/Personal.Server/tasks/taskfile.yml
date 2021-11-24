@@ -2,14 +2,16 @@
 
   - name: Install go-task/task
     shell:
-      cmd: sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d
+      cmd: |
+        sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d
+        mv ~/bin/task ~/bin/gotask
 
   - name: Set crons
     ansible.builtin.cron:
       name: "check dirs"
       minute: "20"
       hour: "19"
-      job: "{{ home_bin }}/task -t ~/.config/task/Taskfile.yml load_cloud_data &>> /tmp/log.err"
+      job: "{{ home_bin }}/gotask -t ~/.config/task/Taskfile.yml load_cloud_data &>> /tmp/log.err"
 
   - name: Get private Taskfile.yml
     ansible.builtin.git:
@@ -23,3 +25,7 @@
       owner: "{{ user }}"
       group: "{{ user }}"      
       mode: "0644"
+
+  - name: Update user in the Taskfile.yml
+    shell:
+      cmd: sed -i 's:antik:{{ user }}:g' ~/.config/task/Taskfile.yml

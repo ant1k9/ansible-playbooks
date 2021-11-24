@@ -9,4 +9,31 @@
         ./install.fish newsletter
       chdir: misc
 
-  # TODO: download the latest dump for links db
+  - name: Install additional utilities
+    shell:
+      cmd: |
+        GOBIN=~/bin go get github.com/ericchiang/pup
+
+  - name: Download the latest links db dump
+    shell:
+      cmd: |
+        ~/bin/gotask -t ~/.config/task/Taskfile.yml update-token
+        DUMP_FILE=$( \
+          curl -X POST https://api.dropboxapi.com/2/files/list_folder \
+            -H "Authorization: Bearer $(cat /tmp/token)" \
+            -H "Content-Type: application/json" \
+            -d '{"path": "/links"}' \
+            | jq '.entries | last | .path_lower' | tr -d '"'
+        )
+        curl -X POST https://content.dropboxapi.com/2/files/download \
+          -H "Authorization: Bearer $(cat /tmp/token)" \
+          -H "Dropbox-API-Arg: {\"path\": \"$DUMP_FILE\"}" \
+          -o /tmp/links.db.zip
+
+  - name: Extract links.db archive
+    ansible.builtin.unarchive:
+      src: /tmp/links.db.zip
+      dest: ~/misc/newsletter/
+      remote_src: yes
+
+  # TODO add systemd file to serve the newsletter-app

@@ -1,0 +1,7 @@
+---
+
+  - name: Start taskd server
+    shell:
+      cmd: |
+        taskdctl start
+        ps -leaf | grep taskd

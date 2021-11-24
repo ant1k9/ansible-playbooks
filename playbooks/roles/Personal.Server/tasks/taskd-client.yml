@@ -1,0 +1,15 @@
+---
+
+  - name: Prepare user config
+    shell:
+      cmd: |
+        taskd add org Public
+        taskd add user 'Public' '{{ taskd_user }}' \
+          | grep 'New user key:' \
+          | awk 'BEGIN { FS = ": " } ; { print $2 }' > "$TASKDDATA/{{ taskd_user }}.userkey"
+        ./generate.client '{{ taskd_user }}'
+      chdir: "{{ taskd_source_dir }}/pki"
+    ignore_errors: yes
+
+  # How to config user on local machine:
+  # https://my-knowledge-map.herokuapp.com/lib/productivity/time-management/taskwarrior.md
