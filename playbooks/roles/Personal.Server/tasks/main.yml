@@ -22,8 +22,8 @@
   - include: taskd-client.yml
     tags: taskd
 
-  - include: openvpn.yml
-    tags: openvpn
-
   - include: chezmoi.yml
     tags: chezmoi.yml
+
+  - include: openvpn.yml
+    tags: openvpn

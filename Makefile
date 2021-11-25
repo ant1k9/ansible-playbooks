@@ -12,4 +12,6 @@ personal-server-local:
 		--ssh-common-args="-i  ./tmp/.vagrant/machines/default/libvirt/private_key -l vagrant" \
 		-e github_token=${GITHUB_TOKEN} \
 		-e dropbox_refresh_token=${DROPBOX_REFRESH_TOKEN} \
-		-e dropbox_credentials=${DROPBOX_CREDENTIALS}
+		-e dropbox_credentials=${DROPBOX_CREDENTIALS} \
+		-e blogs_bot_token=${BLOGS_BOT_TOKEN} \
+		-e blogs_channel=${BLOGS_CHANNEL}

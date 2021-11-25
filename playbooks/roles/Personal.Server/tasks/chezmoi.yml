@@ -1,0 +1,9 @@
+---
+
+  - name: Install chezmoi binary
+    shell:
+      cmd: GOBIN=~/bin sh -c "$(curl -fsLS git.io/chezmoi)"
+
+  - name: Pull the repo
+    shell:
+      cmd: ~/bin/chezmoi init https://github.com/ant1k9/dotfiles

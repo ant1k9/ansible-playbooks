@@ -37,4 +37,11 @@
       dest: ~/misc/newsletter/
       remote_src: yes
 
-  # TODO add systemd file to serve the newsletter-app
+  - name: Deploy the Newsletter App service file
+    template:
+      src: templates/newsletter-app.service
+      dest: /etc/systemd/system/newsletter.service
+    notify:
+      - Update the Newsletter service configuration
+      - Restart the Newsletter service
+    become: yes

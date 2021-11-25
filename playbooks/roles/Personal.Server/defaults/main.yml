@@ -1,4 +1,5 @@
 ---
+
 user: vagrant
 home_bin: /home/vagrant/bin
 
@@ -10,3 +11,6 @@ dropbox_credentials:
 
 taskd_source_dir: ~/taskd-1.1.0
 taskd_user: ant1k9
+
+blogs_bot_token:
+blogs_channel:

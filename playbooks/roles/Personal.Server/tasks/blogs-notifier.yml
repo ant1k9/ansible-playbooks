@@ -26,4 +26,7 @@
       dest: ~/blog-notifier
       remote_src: yes
 
-  # TODO: provide credentials for syncronization
+  - name: Prepare config for blog-notifier
+    template:
+      src: templates/blogs_credentials.yml
+      dest: ~/blog-notifier/credentials.yml

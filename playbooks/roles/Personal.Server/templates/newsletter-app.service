@@ -1,0 +1,10 @@
+[Unit]
+Description=Newsletter Service
+
+[Service]
+Type=simple
+ExecStart={{ home_bin }}/newsletter-app
+SyslogIdentifier=NewsletterService
+
+[Install]
+WantedBy=multi-user.target

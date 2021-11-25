@@ -5,3 +5,20 @@
       cmd: |
         taskdctl start
         ps -leaf | grep taskd
+
+  - name: Reload the NGINX service
+    ansible.builtin.systemd:
+      name: nginx
+      state: reloaded
+      enabled: yes
+    become: yes
+
+  - name: Update the Newsletter service configuration
+    shell: systemctl daemon-reload
+    become: yes
+
+  - name: Restart the Newsletter service
+    service:
+      name: newsletter
+      state: restarted
+    become: yes

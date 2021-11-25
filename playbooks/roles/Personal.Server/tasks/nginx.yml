@@ -1,0 +1,20 @@
+---
+
+  - name: Install NGINX
+    apt:
+      state: present
+      update_cache: yes
+      pkg:
+        - nginx
+    become: yes
+
+  - name: Prepare NGINX configs
+    template:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      mode: 0755
+    with_items:
+      - { src: nginx.conf, dest: /etc/nginx/nginx.conf }
+      - { src: server.conf, dest: /etc/nginx/sites-enabled/default }
+    become: yes
+    notify: Reload the NGINX service
