@@ -2,3 +2,6 @@
 
 [personal]
 192.168.122.106
+
+[personal:vars]
+ansible_python_interpreter=/usr/bin/python3

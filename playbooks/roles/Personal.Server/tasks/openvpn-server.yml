@@ -71,3 +71,34 @@
       src: templates/openvpn-server.conf
       dest: /etc/openvpn/server/server.conf
     become: yes
+
+  - name: Config nat for openvpn
+    ansible.builtin.iptables:
+      table: nat
+      chain: POSTROUTING
+      out_interface: eth0
+      jump: MASQUERADE
+    become: yes
+
+  - name: Config accept for requests
+    ansible.builtin.iptables:
+      chain: FORWARD
+      src_range: 172.50.0.0-172.50.0.255
+      jump: ACCEPT
+    become: yes
+
+  - name: Config forwarding of tun0
+    ansible.builtin.iptables:
+      chain: FORWARD
+      dst_range: 172.50.0.0-172.50.0.255
+      match: state
+      ctstate: RELATED,ESTABLISHED
+      jump: ACCEPT
+    become: yes
+
+  - name: Config ip forwarding
+    sysctl:
+      name: net.ipv4.ip_forward
+      value: '1'
+      sysctl_set: yes
+    become: yes

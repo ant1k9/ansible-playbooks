@@ -1,0 +1,73 @@
+---
+
+  - name: Generate request and key
+    ansible.builtin.expect:
+      command: ./easyrsa gen-req {{ openvpn_client_name }} nopass
+      responses:
+        'Common Name .*:\s*$': "{{ openvpn_server_name }}"
+        'Enter PEM.*:\s*$': "{{ openvpn_client_password }}"
+        'Veryfying - Enter PEM.*:\s*$': "{{ openvpn_client_password }}"
+      chdir: "{{ openvpn_path_easyrsa }}"
+      creates: "{{ openvpn_path_easyrsa }}/pki/private/{{ openvpn_client_name }}.key"
+    become: yes
+
+  - name: Sign the server key with the CA
+    ansible.builtin.expect:
+      command: ./easyrsa sign-req client {{ openvpn_client_name }}
+      responses:
+        '\s*Confirm request details:\s*': "yes"
+        'Enter pass phrase for .*:\s*$': "{{ openvpn_ca_password }}"
+      chdir: "{{ openvpn_path_easyrsa }}"
+      creates: "{{ openvpn_path_easyrsa }}/pki/private/{{ openvpn_client_name }}.crt"
+    become: yes
+
+  - name: Copy certificate to openvpn folder
+    copy:
+      src: "{{ openvpn_path_easyrsa }}/{{ item }}"
+      dest: /etc/openvpn/client/
+      remote_src: yes
+      owner: root
+      group: root
+    with_items:
+      - pki/private/{{ openvpn_client_name }}.key
+      - pki/issued/{{ openvpn_client_name }}.crt
+    become: yes
+
+  - name: Generate client config
+    shell:
+      cmd: |
+        echo "
+        client
+        dev tun
+        proto udp
+        remote $(hostname -I)
+        resolv-retry infinite
+        nobind
+        persist-key
+        persist-tun
+
+        remote-cert-tls server
+        cipher AES-256-CBC
+        auth SHA512
+
+        <ca>
+        $(cat /etc/openvpn/server/ca.crt)
+        </ca>
+
+        <cert>
+        $(cat /etc/openvpn/client/{{ openvpn_client_name }}.crt)
+        </cert>
+
+        <key>
+        $(cat /etc/openvpn/client/{{ openvpn_client_name }}.key)
+        </key>
+
+        <tls-auth>
+        $(cat /etc/openvpn/server/ta.key)
+        </tls-auth>
+
+        key-direction 1
+        verb 4
+        mute 20" > /etc/openvpn/client/client.conf
+      chdir: "{{ openvpn_path_easyrsa }}"
+    become: yes

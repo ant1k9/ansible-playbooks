@@ -25,5 +25,8 @@
   - include: chezmoi.yml
     tags: chezmoi.yml
 
-  - include: openvpn.yml
+  - include: openvpn-server.yml
+    tags: openvpn
+
+  - include: openvpn-client.yml
     tags: openvpn
