@@ -1,0 +1,11 @@
+[Unit]
+Description=Openvpn Server
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/openvpn --config /etc/openvpn/server/server.conf
+SyslogIdentifier=OpenvpnServerService
+
+[Install]
+WantedBy=multi-user.target

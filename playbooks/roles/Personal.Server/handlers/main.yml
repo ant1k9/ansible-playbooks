@@ -13,7 +13,7 @@
       enabled: yes
     become: yes
 
-  - name: Update the Newsletter service configuration
+  - name: Update service configuration
     shell: systemctl daemon-reload
     become: yes
 
@@ -21,4 +21,12 @@
     service:
       name: newsletter
       state: restarted
+      enabled: yes
+    become: yes
+
+  - name: Restart the OpenVPN service
+    service:
+      name: openvpn
+      state: restarted
+      enabled: yes
     become: yes

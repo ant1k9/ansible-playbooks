@@ -42,6 +42,6 @@
       src: templates/newsletter-app.service
       dest: /etc/systemd/system/newsletter.service
     notify:
-      - Update the Newsletter service configuration
+      - Update service configuration
       - Restart the Newsletter service
     become: yes

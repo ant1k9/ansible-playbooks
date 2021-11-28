@@ -72,6 +72,15 @@
       dest: /etc/openvpn/server/server.conf
     become: yes
 
+  - name: Deploy the OpenVPN service file
+    template:
+      src: templates/openvpn.service
+      dest: /etc/systemd/system/openvpn.service
+    notify:
+      - Update service configuration
+      - Restart the OpenVPN service
+    become: yes
+
   - name: Config nat for openvpn
     ansible.builtin.iptables:
       table: nat
