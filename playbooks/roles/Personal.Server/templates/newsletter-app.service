@@ -5,6 +5,8 @@ Description=Newsletter Service
 Type=simple
 ExecStart={{ home_bin }}/newsletter-app
 SyslogIdentifier=NewsletterService
+User={{ user }}
+Group={{ user }}
 
 [Install]
 WantedBy=multi-user.target

@@ -1,0 +1,6 @@
+---
+  - name: Apply the Local.Environment role to all personal
+    hosts: local
+
+    roles:
+      - Local.Environment

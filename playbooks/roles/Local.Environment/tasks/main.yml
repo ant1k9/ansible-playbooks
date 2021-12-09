@@ -1,0 +1,164 @@
+---
+  # tasks/main.yml: Main tasks for LocalEnvironment.Ansible
+
+  - name: Install brew packages
+    shell:
+      cmd: "PATH=$PATH:{{ brew_bin }} brew install {{ item }}"
+    with_items:
+      - bat
+      - curl
+      - docker
+      - docker-compose
+      - fish
+      - fzf
+      - gcc
+      - git
+      - golang
+      - golangci-lint
+      - jq
+      - kubectl
+      - kubectx
+      - llvm
+      - minikube
+      - node
+      - npm
+      - postgresql
+      - protoc-gen-go-grpc
+      - python3
+      - ripgrep
+      - rustup
+      - shellcheck
+      - starship
+      - telnet
+      - the_silver_searcher
+      - tmux
+      - translate-shell
+      - tree
+      - vim
+      - virtualbox
+      - wget
+      - yarn
+      - zsh
+    ignore_errors: true
+    tags: init
+
+  - name: Install go packages
+    shell:
+      cmd: "PATH=$PATH:{{ brew_bin }} CGO_ENABLED=0 go install {{ item }}"
+    with_items:
+      - github.com/alexellis/arkade@latest
+      - github.com/ant1k9/auto-launcher@latest
+      - github.com/twpayne/chezmoi@latest
+      - github.com/schollz/croc/v9@latest
+      - github.com/go-delve/delve/cmd/dlv@latest
+      - github.com/muesli/duf@latest
+      - github.com/ant1k9/gcal-fetch-events@latest
+      - github.com/charmbracelet/glow@latest
+      - github.com/x-motemen/gore/cmd/gore@latest
+      - github.com/melbahja/got/cmd/got@latest
+      - github.com/cweill/gotests/...@latest
+      - github.com/tomnomnom/gron@latest
+      - github.com/nishanths/license@latest
+      - github.com/ericchiang/pup@latest
+      - github.com/claudiodangelis/qrcp@latest
+      - github.com/mgechev/revive@latest
+      - github.com/tsenart/vegeta@latest
+      - github.com/sachaos/viddy@latest
+    ignore_errors: true
+    tags: init
+
+  - name: Python packages
+    shell:
+      cmd: "{{ brew_bin }}/pip3 install {{ item }}"
+    with_items:
+      - cpplint
+      - Django
+      - flake8
+      - flask
+      - ipython
+      - jupyter
+      - litecli
+      - mypy
+      - ngrok
+      - pylint
+      - semgrep
+      - virtualenv
+      - youtube-dl
+    ignore_errors: true
+    tags: init
+
+  - name: Custom installation
+    shell:
+      cmd: |
+        export PATH=$PATH:{{ brew_bin }}
+
+        # k9s
+        CGO_ENABLED=0 github.com/derailed/k9s@latest
+        # ijq
+        git clone https://github.com/gpanders/ijq /tmp/ijq
+        cd /tmp/ijq && make install || true
+        mv ijq $HOME/go/bin/ijq
+        # yc
+        curl https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+        cp $(which yc) $HOME/bin/yc || true
+    ignore_errors: true
+    tags: init
+
+  - name: Custom installation with sudo
+    shell:
+      cmd: |
+        export PATH=$PATH:{{ brew_bin }}
+
+        # heroku
+        npm install -g heroku aasvg
+    become: true
+    ignore_errors: true
+    tags: init
+
+  - name: Install Cargo crates
+    shell:
+      cmd: "PATH=$PATH:{{ cargo_bin }} cargo install {{ item }}"
+    with_items:
+      - cargo-add
+      - choose
+      - du-dust
+      - htmlq
+      - svgbob_cli
+      - tealdeer
+      - tokei
+    ignore_errors: true
+    tags: init
+
+  - name: Install misc packages
+    shell:
+      cmd: |
+        export PATH=$PATH:{{ cargo_bin }}:{{ home_bin }}
+        mkdir -p {{ home_bin }}
+        mkdir -p ~/.config/fish/completions
+
+        # misc
+        mkdir -p $HOME/ny2j/projects/misc
+        git clone https://github.com/ant1k9/misc $HOME/ny2j/projects/misc
+        cd $HOME/ny2j/projects/misc
+        ./install.fish misc
+        misc install knowledge-map
+        misc install pdf-picker
+        misc install youtube-playlist-sorter
+
+        #knowledge-map
+        git clone https://github.com/ant1k9/knowledge-map $HOME/ny2j/projects/knowledge-map
+
+        # formatter
+        git clone https://github.com/ant1k9/formatter $HOME/ny2j/projects/formatter
+        cd $HOME/ny2j/projects/formatter
+        cargo install --path .
+
+        # noter
+        git clone https://github.com/ant1k9/noter $HOME/ny2j/projects/noter
+        cd $HOME/ny2j/projects/noter
+        cargo install --path .
+
+        # daily-dashboard
+        git clone https://github.com/ant1k9/daily-dashboard $HOME/ny2j/projects/daily-dashboard
+        cd $HOME/ny2j/projects/daily-dashboard
+        cargo install --path .
