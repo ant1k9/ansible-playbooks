@@ -1,12 +1,11 @@
 ---
 
 user: vagrant
+
 home_bin: /home/{{ user }}/bin
 brew_bin: /home/linuxbrew/.linuxbrew/bin
 cargo_bin: /home/{{ user }}/.cargo/bin
-
-github_user: ant1k9
-github_token:
+path: /bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:{{ home_bin }}:{{ cargo_bin }}
 
 taskd_source_dir: ~/taskd-1.1.0
 taskd_user: ant1k9

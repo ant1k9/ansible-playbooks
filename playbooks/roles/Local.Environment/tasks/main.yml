@@ -3,7 +3,7 @@
 
   - name: Install brew packages
     shell:
-      cmd: "PATH=$PATH:{{ brew_bin }} brew install {{ item }}"
+      cmd: "brew install {{ item }}"
     with_items:
       - bat
       - curl
@@ -44,7 +44,7 @@
 
   - name: Install go packages
     shell:
-      cmd: "PATH=$PATH:{{ brew_bin }} CGO_ENABLED=0 go install {{ item }}"
+      cmd: "CGO_ENABLED=0 go install {{ item }}"
     with_items:
       - github.com/alexellis/arkade@latest
       - github.com/ant1k9/auto-launcher@latest
@@ -69,7 +69,7 @@
 
   - name: Python packages
     shell:
-      cmd: "{{ brew_bin }}/pip3 install {{ item }}"
+      cmd: "install {{ item }}"
     with_items:
       - cpplint
       - Django
@@ -90,8 +90,6 @@
   - name: Custom installation
     shell:
       cmd: |
-        export PATH=$PATH:{{ brew_bin }}
-
         # k9s
         CGO_ENABLED=0 github.com/derailed/k9s@latest
         # ijq
@@ -107,8 +105,6 @@
   - name: Custom installation with sudo
     shell:
       cmd: |
-        export PATH=$PATH:{{ brew_bin }}
-
         # heroku
         npm install -g heroku aasvg
     become: true
@@ -117,7 +113,7 @@
 
   - name: Install Cargo crates
     shell:
-      cmd: "PATH=$PATH:{{ cargo_bin }} cargo install {{ item }}"
+      cmd: "cargo install {{ item }}"
     with_items:
       - cargo-add
       - choose
@@ -132,7 +128,6 @@
   - name: Install misc packages
     shell:
       cmd: |
-        export PATH=$PATH:{{ cargo_bin }}:{{ home_bin }}
         mkdir -p {{ home_bin }}
         mkdir -p ~/.config/fish/completions
 
@@ -141,24 +136,28 @@
         git clone https://github.com/ant1k9/misc $HOME/ny2j/projects/misc
         cd $HOME/ny2j/projects/misc
         ./install.fish misc
-        misc install knowledge-map
-        misc install pdf-picker
-        misc install youtube-playlist-sorter
+        for package in knowledge-map pdf-picker youtube-playlist-sorter; do
+          misc install "$package"
+        done
 
         #knowledge-map
         git clone https://github.com/ant1k9/knowledge-map $HOME/ny2j/projects/knowledge-map
 
-        # formatter
-        git clone https://github.com/ant1k9/formatter $HOME/ny2j/projects/formatter
-        cd $HOME/ny2j/projects/formatter
-        cargo install --path .
+        for package in formatter noter daily-dashboard; do
+          git clone "https://github.com/ant1k9/$package" "$HOME/ny2j/projects/$package"
+          cd "$HOME/ny2j/projects/$package"
+          cargo install --path .
+        done
 
-        # noter
-        git clone https://github.com/ant1k9/noter $HOME/ny2j/projects/noter
-        cd $HOME/ny2j/projects/noter
-        cargo install --path .
-
-        # daily-dashboard
-        git clone https://github.com/ant1k9/daily-dashboard $HOME/ny2j/projects/daily-dashboard
-        cd $HOME/ny2j/projects/daily-dashboard
-        cargo install --path .
+  # TODO: task-client
+  # TODO: openvpn-config
+  # TODO: gcal-config
+  # TODO: musikcube
+  # TODO: git-configs
+  # TODO: dotfiles
+  # TODO: tmux-plugin
+  # TODO: vim-plugins
+  # TODO: lsp
+  # TODO: glab
+  # TODO: default shell
+  # TODO: separate tasks into several files
