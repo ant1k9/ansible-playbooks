@@ -1,0 +1,16 @@
+---
+
+  - name: Install Cargo crates
+    shell:
+      cmd: "cargo install {{ item }}"
+    with_items:
+      - cargo-add
+      - choose
+      - du-dust
+      - htmlq
+      - svgbob_cli
+      - tealdeer
+      - tokei
+    ignore_errors: true
+    tags:
+      - rust

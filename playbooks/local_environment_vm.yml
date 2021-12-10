@@ -4,3 +4,6 @@
 
     roles:
       - Local.Environment
+
+    environment:
+      PATH: "{{ path }}"

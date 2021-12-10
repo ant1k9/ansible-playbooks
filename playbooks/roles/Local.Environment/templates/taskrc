@@ -1,0 +1,13 @@
+# Files
+data.location=~/.task
+
+# Color theme (uncomment one to use)
+include /usr/share/task/dark-256.theme
+
+taskd.certificate=/home/{{ user }}/.task/{{ taskd_user }}.cert.pem
+taskd.key=/home/{{ user }}/.task/{{ taskd_user }}.key.pem
+taskd.ca=/home/{{ user }}/.task/ca.cert.pem
+taskd.server=
+taskd.credentials=
+
+taskd.trust=ignore hostname

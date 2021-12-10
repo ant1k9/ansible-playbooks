@@ -1,0 +1,28 @@
+---
+
+  - name: Install go packages
+    shell:
+      cmd: "CGO_ENABLED=0 go install {{ item }}"
+    with_items:
+      - github.com/alexellis/arkade@latest
+      - github.com/ant1k9/auto-launcher@latest
+      - github.com/twpayne/chezmoi@latest
+      - github.com/schollz/croc/v9@latest
+      - github.com/go-delve/delve/cmd/dlv@latest
+      - github.com/muesli/duf@latest
+      - github.com/ant1k9/gcal-fetch-events@latest
+      - github.com/profclems/glab/cmd/glab@latest
+      - github.com/charmbracelet/glow@latest
+      - github.com/x-motemen/gore/cmd/gore@latest
+      - github.com/melbahja/got/cmd/got@latest
+      - github.com/cweill/gotests/...@latest
+      - github.com/tomnomnom/gron@latest
+      - github.com/nishanths/license@latest
+      - github.com/ericchiang/pup@latest
+      - github.com/claudiodangelis/qrcp@latest
+      - github.com/mgechev/revive@latest
+      - github.com/tsenart/vegeta@latest
+      - github.com/sachaos/viddy@latest
+    ignore_errors: true
+    tags:
+      - go

@@ -1,0 +1,28 @@
+---
+
+  - name: Install misc packages
+    shell:
+      cmd: |
+        mkdir -p {{ home_bin }}
+        mkdir -p ~/.config/fish/completions
+
+        # misc
+        mkdir -p $HOME/ny2j/projects/misc
+        git clone https://github.com/ant1k9/misc $HOME/ny2j/projects/misc
+        cd $HOME/ny2j/projects/misc
+        ./install.fish misc
+        for package in knowledge-map pdf-picker youtube-playlist-sorter; do
+          misc install "$package"
+        done
+
+        #knowledge-map
+        git clone https://github.com/ant1k9/knowledge-map $HOME/ny2j/projects/knowledge-map
+
+        for package in formatter noter daily-dashboard; do
+          git clone "https://github.com/ant1k9/$package" "$HOME/ny2j/projects/$package"
+          cd "$HOME/ny2j/projects/$package"
+          cargo install --path .
+        done
+    ignore_errors: true
+    tags:
+      - misc

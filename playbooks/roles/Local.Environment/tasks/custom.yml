@@ -1,0 +1,32 @@
+---
+
+  - name: Custom installation
+    shell:
+      cmd: |
+        # k9s
+        CGO_ENABLED=0 github.com/derailed/k9s@latest
+        # ijq
+        git clone https://github.com/gpanders/ijq /tmp/ijq
+        cd /tmp/ijq && make install || true
+        mv ijq {{ go_bin }}
+        # yc
+        curl https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+        cp $(which yc) $HOME/bin/yc || true
+        # direnv
+        curl -sfL https://direnv.net/install.sh | bash
+        # logo-ls
+        git clone https://github.com/Yash-Handa/logo-ls /tmp/logo-ls
+        cd /tmp/logo-ls && go build . && mv logo-ls {{ go_bin }}
+    ignore_errors: true
+    tags:
+      - custom
+
+  - name: Custom installation with sudo
+    shell:
+      cmd: |
+        # heroku
+        npm install -g heroku aasvg
+    become: true
+    ignore_errors: true
+    tags:
+      - custom

@@ -1,0 +1,43 @@
+---
+
+  - name: Install brew packages
+    shell:
+      cmd: "brew install {{ item }}"
+    with_items:
+      - bat
+      - curl
+      - docker
+      - docker-compose
+      - fish
+      - fzf
+      - gcc
+      - git
+      - golang
+      - golangci-lint
+      - jq
+      - kubectl
+      - kubectx
+      - llvm
+      - minikube
+      - node
+      - npm
+      - postgresql
+      - protoc-gen-go-grpc
+      - python3
+      - ripgrep
+      - rustup
+      - shellcheck
+      - starship
+      - telnet
+      - the_silver_searcher
+      - tmux
+      - translate-shell
+      - tree
+      - vim
+      - virtualbox
+      - wget
+      - yarn
+      - zsh
+    ignore_errors: true
+    tags:
+      - brew

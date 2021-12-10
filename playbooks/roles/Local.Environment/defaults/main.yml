@@ -5,7 +5,7 @@ user: vagrant
 home_bin: /home/{{ user }}/bin
 brew_bin: /home/linuxbrew/.linuxbrew/bin
 cargo_bin: /home/{{ user }}/.cargo/bin
-path: /bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:{{ home_bin }}:{{ cargo_bin }}
+go_bin: /home/{{ user }}/go/bin
+path: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:{{ home_bin }}:{{ cargo_bin }}:{{ brew_bin }}:{{ go_bin }}"
 
-taskd_source_dir: ~/taskd-1.1.0
 taskd_user: ant1k9

@@ -1,0 +1,23 @@
+---
+
+  - name: Python packages
+    shell:
+      cmd: "install {{ item }}"
+    with_items:
+      - cpplint
+      - Django
+      - flake8
+      - flask
+      - ipython
+      - jupyter
+      - litecli
+      - mypy
+      - ngrok
+      - powerline-status
+      - pylint
+      - semgrep
+      - virtualenv
+      - youtube-dl
+    ignore_errors: true
+    tags:
+      - python

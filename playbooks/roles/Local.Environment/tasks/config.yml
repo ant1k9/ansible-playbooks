@@ -1,0 +1,68 @@
+---
+
+  # Need to add server and credentials manually
+  - name: Copy taskd config
+    template:
+      src: templates/taskrc
+      dest: $HOME/.taskrc
+    tags:
+      - config
+
+  - name: Create task config directory
+    file:
+      path: $HOME/.task
+      state: directory
+    tags:
+      - config
+
+  # Need to copy openvpn config manually
+  - name: Install openvpn
+    shell:
+      cmd: brew install openvpn
+    tags:
+      - config
+
+  - name: Install dotfiles
+    shell:
+      cmd: |
+        git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+        chezmoi init https://github.com/ant1k9/dotfiles
+        chezmoi apply
+    tags:
+      - config
+
+  - name: Install vim-plugins
+    shell:
+      cmd: |
+        git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+        curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+            https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        vim -E -s -u $HOME/.vimrc +PluginInstall +PlugInstall +qall
+    ignore_errors: true
+    tags:
+      - config
+
+  - name: Prepare common .gitconfig
+    template:
+      src: templates/gitconfig
+      dest: $HOME/.gitconfig
+    tags:
+      - config
+
+  - name: Prepare dummy user
+    template:
+      src: templates/gitconfig.user
+      dest: "$HOME/.gitconfig.{{ item }}"
+    with_items:
+      - antik9
+      - ant1k9
+    tags:
+      - config
+
+  # - name: Change default shell
+  #   user:
+  #     name: "{{ user }}"
+  #     shell: /home/linuxbrew/.linuxbrew/bin/fish
+  #   become: yes
+  #   tags:
+  #     - config

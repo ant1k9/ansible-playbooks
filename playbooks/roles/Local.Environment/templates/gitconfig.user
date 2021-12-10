@@ -1,0 +1,8 @@
+[pull]
+	rebase = false
+[user]
+	name = 
+	email = 
+[credential]
+    username = {{ item }}
+    helper = store

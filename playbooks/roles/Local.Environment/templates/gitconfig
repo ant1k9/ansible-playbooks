@@ -1,0 +1,16 @@
+[includeIf "gitdir:~/ny2j/projects/"]
+    path = ~/.gitconfig.ant1k9
+[includeIf "gitdir:~/.local/share/"]
+    path = ~/.gitconfig.ant1k9
+[includeIf "gitdir:~/.config/"]
+    path = ~/.gitconfig.ant1k9
+[includeIf "gitdir:~/ny2j/projects/hs/"]
+    path = ~/.gitconfig.antik9
+[includeIf "gitdir:~/ny2j/training/compilers/"]
+    path = ~/.gitconfig.antik9
+[includeIf "gitdir:~/ny2j/training/otus/"]
+    path = ~/.gitconfig.antik9
+[split-diffs]
+    syntax-highlighting-theme = github-dark-dimmed
+[credential "https://github.com"]
+	helper = !/usr/bin/gh auth git-credential
