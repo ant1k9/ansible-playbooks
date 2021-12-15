@@ -45,3 +45,10 @@
       - Update service configuration
       - Restart the Newsletter service
     become: yes
+
+  - name: Set crons for newsletter
+    ansible.builtin.cron:
+      name: "newsletter send"
+      minute: "15"
+      hour: "6-20"
+      job: "cd /home/{{ user }}/misc/newsletter && TELEGRAM_CHANNEL={{ telegram_channel }} TELEGRAM__BOT_TOKEN={{ telegram_bot_token }} ./generate.fish send"

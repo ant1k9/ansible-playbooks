@@ -26,6 +26,13 @@
       dest: ~/blog-notifier
       remote_src: yes
 
+  - name: Set crons for blog-notifier
+    ansible.builtin.cron:
+      name: "Crawl blogs"
+      minute: "0"
+      hour: "0,9,12,15,18,21"
+      job: "cd /home/{{ user }}/blog-notifier && ./blogs-notifier.py -crawl"
+
   - name: Prepare config for blog-notifier
     template:
       src: templates/blogs_credentials.yml

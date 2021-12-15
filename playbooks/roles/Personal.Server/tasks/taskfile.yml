@@ -6,7 +6,7 @@
         sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d
         mv ~/bin/task ~/bin/gotask
 
-  - name: Set crons
+  - name: Set crons for gotask
     ansible.builtin.cron:
       name: "check dirs"
       minute: "20"

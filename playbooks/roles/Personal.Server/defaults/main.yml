@@ -20,3 +20,6 @@ openvpn_ca_password: my-password
 openvpn_path_easyrsa: /usr/share/easy-rsa
 openvpn_client_name: client1
 openvpn_client_password: my-password
+
+telegram_channel:
+telegram_bot_token:

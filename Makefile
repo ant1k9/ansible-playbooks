@@ -14,7 +14,9 @@ personal-server-local:
 		-e dropbox_refresh_token=${DROPBOX_REFRESH_TOKEN} \
 		-e dropbox_credentials=${DROPBOX_CREDENTIALS} \
 		-e blogs_bot_token=${BLOGS_BOT_TOKEN} \
-		-e blogs_channel=${BLOGS_CHANNEL}
+		-e blogs_channel=${BLOGS_CHANNEL} \
+		-e telegram_channel=${TELEGRAM_CHANNEL} \
+		-e telegram_bot_token=${TELEGRAM__BOT_TOKEN}
 
 .PHONY: local-environment
 local-environment:
