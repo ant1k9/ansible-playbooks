@@ -8,6 +8,7 @@
       - curl
       - docker
       - docker-compose
+      - fd
       - fish
       - fzf
       - gcc
@@ -38,6 +39,7 @@
       - wget
       - yarn
       - zsh
+      - zoxide
     ignore_errors: true
     tags:
       - brew

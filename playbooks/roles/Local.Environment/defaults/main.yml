@@ -1,11 +1,13 @@
 ---
 
 user: vagrant
+home_prefix: {{ "/home/" if "macos" in ansible_distribution else "/Users/" }}
+home: "{{ home_prefix }}{{ user }}"
 
-home_bin: /home/{{ user }}/bin
+home_bin: "{{ home }}/bin"
 brew_bin: /home/linuxbrew/.linuxbrew/bin
-cargo_bin: /home/{{ user }}/.cargo/bin
-go_bin: /home/{{ user }}/go/bin
+cargo_bin: "{{ home }}/.cargo/bin"
+go_bin: "{{ home }}/go/bin"
 path: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:{{ home_bin }}:{{ cargo_bin }}:{{ brew_bin }}:{{ go_bin }}"
 
 taskd_user: ant1k9

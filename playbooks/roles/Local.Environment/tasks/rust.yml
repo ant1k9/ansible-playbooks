@@ -1,5 +1,9 @@
 ---
 
+  - name: Install Cargo and Rustc
+    shell:
+      cmd: rustup-init -y
+
   - name: Install Cargo crates
     shell:
       cmd: "cargo install {{ item }}"

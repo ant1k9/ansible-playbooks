@@ -2,7 +2,7 @@
 
   - name: Python packages
     shell:
-      cmd: "install {{ item }}"
+      cmd: "pip3 install {{ item }}"
     with_items:
       - cpplint
       - Django
