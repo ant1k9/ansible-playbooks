@@ -13,13 +13,13 @@
       - fzf
       - gcc
       - git
+      - git-split-diffs
       - golang
       - golangci-lint
       - jq
       - kubectl
       - kubectx
       - llvm
-      - minikube
       - node
       - npm
       - postgresql
@@ -35,11 +35,9 @@
       - translate-shell
       - tree
       - vim
-      - virtualbox
       - wget
       - yarn
       - zsh
-      - zoxide
     ignore_errors: true
     tags:
       - brew

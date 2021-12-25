@@ -15,6 +15,7 @@
       - svgbob_cli
       - tealdeer
       - tokei
+      - zoxide
     ignore_errors: true
     tags:
       - rust
