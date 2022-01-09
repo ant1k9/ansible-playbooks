@@ -26,10 +26,9 @@
             -d '{"path": "/links"}' \
             | jq '.entries | last | .path_lower' | tr -d '"'
         )
-        curl -X POST https://content.dropboxapi.com/2/files/download \
-          -H "Authorization: Bearer $(cat /tmp/token)" \
-          -H "Dropbox-API-Arg: {\"path\": \"$DUMP_FILE\"}" \
-          -o /tmp/links.db.zip
+        DUMP_FILE="/tmp/$(basename $DUMP_FILE)"
+        DROPBOX_DIRECTORY=/links DROPBOX_TOKEN=$(cat /tmp/token) load-from-dropbox "$DUMP_FILE"
+        mv $DUMP_FILE /tmp/links.db.zip
 
   - name: Extract links.db archive
     ansible.builtin.unarchive:
@@ -49,6 +48,6 @@
   - name: Set crons for newsletter
     ansible.builtin.cron:
       name: "newsletter send"
-      minute: "15,45"
+      minute: "15,35,55"
       hour: "6-20"
       job: "cd /home/{{ user }}/misc/newsletter && TELEGRAM_CHANNEL={{ newsletter_channel }} TELEGRAM__BOT_TOKEN={{ telegram_bot_token }} ./generate.fish send"
