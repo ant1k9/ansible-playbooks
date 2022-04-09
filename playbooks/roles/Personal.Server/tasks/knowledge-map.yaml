@@ -1,0 +1,14 @@
+---
+  - name: Clone knowledge map repository
+    ansible.builtin.git:
+      repo: https://github.com/{{ github_user }}/knowdledge-map
+      dest: "~/knowdledge-map"
+
+  - name: Deploy the Knowledge Map App service file
+    template:
+      src: templates/knowledge-map.service
+      dest: /etc/systemd/system/knowledge-map.service
+    notify:
+      - Update service configuration
+      - Restart the Knowledge Map service
+    become: yes

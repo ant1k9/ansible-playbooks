@@ -13,6 +13,9 @@
   - include: blogs-notifier.yml
     tags: blogs-notifier
 
+  - include: knowledge-map.yml
+    tags: blogs-notifier
+
   - include: taskfile.yml
     tags: taskfile
 

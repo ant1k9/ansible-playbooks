@@ -12,6 +12,7 @@
       - fish
       - fzf
       - gcc
+      - gibo
       - git
       - git-split-diffs
       - golang

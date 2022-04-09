@@ -1,5 +1,4 @@
 ---
-
   - name: Install misc utilties
     shell:
       cmd: |

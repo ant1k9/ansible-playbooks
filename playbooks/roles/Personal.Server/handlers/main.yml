@@ -1,5 +1,4 @@
 ---
-
   - name: Start taskd server
     shell:
       cmd: |
@@ -20,6 +19,13 @@
   - name: Restart the Newsletter service
     service:
       name: newsletter
+      state: restarted
+      enabled: yes
+    become: yes
+
+  - name: Restart the Knowledge Map service
+    service:
+      name: knowledge-map
       state: restarted
       enabled: yes
     become: yes

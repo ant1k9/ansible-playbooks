@@ -1,0 +1,14 @@
+[Unit]
+Description=Knowledge Map Service
+
+[Service]
+Type=simple
+Environment="PORT=6000"
+WorkingDirectory={{ home_bin }}/knowledge-map
+ExecStart=/usr/bin/go run main.go
+SyslogIdentifier=KnowledgeMapService
+User={{ user }}
+Group={{ user }}
+
+[Install]
+WantedBy=multi-user.target
