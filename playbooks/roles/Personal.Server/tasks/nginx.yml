@@ -16,5 +16,6 @@
     with_items:
       - { src: nginx.conf, dest: /etc/nginx/nginx.conf }
       - { src: server.conf, dest: /etc/nginx/sites-enabled/default }
+      - { src: htpasswd, dest: /etc/nginx/.htpasswd }
     become: yes
     notify: Reload the NGINX service

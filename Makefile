@@ -4,7 +4,18 @@ deploy-rocket:
 
 .PHONY: personal-server
 personal-server:
-	@ansible-playbook -i playbooks/inventory playbooks/personal_server.yml -v
+	@ansible-playbook -i playbooks/inventory playbooks/personal_server.yml -v \
+		-e github_token=${GITHUB_TOKEN} \
+		-e dropbox_refresh_token=${DROPBOX_REFRESH_TOKEN} \
+		-e dropbox_credentials=${DROPBOX_CREDENTIALS} \
+		-e blogs_channel=${BLOGS_CHANNEL} \
+		-e newsletter_channel=${NEWSLETTER_CHANNEL} \
+		-e telegram_bot_token=${TELEGRAM_BOT_TOKEN} \
+		-e user=${PERSONAL_SERVER_USER} \
+		-e password=${PERSONAL_SERVER_PASSWORD} \
+		-e openvpn_ca_password="${PERSONAL_SERVER_PASSWORD}" \
+		-e openvpn_client_name="${PERSONAL_SERVER_USER}" \
+		-e openvpn_client_password="${PERSONAL_SERVER_PASSWORD}"
 
 .PHONY: personal-server-local
 personal-server-local:

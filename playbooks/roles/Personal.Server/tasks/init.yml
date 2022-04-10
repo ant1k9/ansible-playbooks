@@ -24,6 +24,7 @@
     with_items:
       - litecli
       - flask
+      - uploadserver
 
   - name: Clone repos
     ansible.builtin.git:

@@ -1,0 +1,13 @@
+[Unit]
+Description=Agile File Service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 -m uploadserver 7000
+WorkingDirectory=/home/{{ user }}/.local/share/agile-cli
+SyslogIdentifier=AgileFileService
+User={{ user }}
+Group={{ user }}
+
+[Install]
+WantedBy=multi-user.target

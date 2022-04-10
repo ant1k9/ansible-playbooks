@@ -44,6 +44,15 @@
       - Restart the Newsletter service
     become: yes
 
+  - name: Deploy the Agile File service file
+    template:
+      src: templates/agile-cli-files.service
+      dest: /etc/systemd/system/agile-cli-files.service
+    notify:
+      - Update service configuration
+      - Restart the Agile CLI Files service
+    become: yes
+
   - name: Set crons for newsletter
     ansible.builtin.cron:
       name: "newsletter send"

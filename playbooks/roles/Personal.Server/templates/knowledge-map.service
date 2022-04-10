@@ -4,7 +4,7 @@ Description=Knowledge Map Service
 [Service]
 Type=simple
 Environment="PORT=6000"
-WorkingDirectory={{ home_bin }}/knowledge-map
+WorkingDirectory=/home/{{ user }}/knowledge-map
 ExecStart=/usr/bin/go run main.go
 SyslogIdentifier=KnowledgeMapService
 User={{ user }}

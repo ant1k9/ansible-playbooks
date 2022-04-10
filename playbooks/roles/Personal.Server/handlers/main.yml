@@ -30,6 +30,13 @@
       enabled: yes
     become: yes
 
+  - name: Restart the Agile CLI Files service
+    service:
+      name: agile-cli-files
+      state: restarted
+      enabled: yes
+    become: yes
+
   - name: Restart the OpenVPN service
     service:
       name: openvpn

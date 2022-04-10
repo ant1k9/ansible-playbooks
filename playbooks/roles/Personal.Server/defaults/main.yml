@@ -1,6 +1,7 @@
 ---
 
 user: vagrant
+password: vagrant
 home_bin: /home/vagrant/bin
 
 github_user: ant1k9
