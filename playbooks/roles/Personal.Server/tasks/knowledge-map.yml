@@ -1,8 +1,8 @@
 ---
   - name: Clone knowledge map repository
     ansible.builtin.git:
-      repo: https://github.com/{{ github_user }}/knowdledge-map
-      dest: "~/knowdledge-map"
+      repo: https://github.com/{{ github_user }}/knowledge-map
+      dest: "~/knowledge-map"
 
   - name: Deploy the Knowledge Map App service file
     template:

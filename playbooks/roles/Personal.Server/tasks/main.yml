@@ -4,6 +4,9 @@
   - include: init.yml
     tags: init
 
+  - include: taskfile.yml
+    tags: taskfile
+
   - include: misc.yml
     tags: misc
 
@@ -15,15 +18,6 @@
 
   - include: knowledge-map.yml
     tags: blogs-notifier
-
-  - include: taskfile.yml
-    tags: taskfile
-
-  - include: taskd.yml
-    tags: taskd
-
-  - include: taskd-client.yml
-    tags: taskd
 
   - include: chezmoi.yml
     tags: chezmoi.yml

@@ -2,7 +2,7 @@
 
 user: vagrant
 password: vagrant
-home_bin: /home/vagrant/bin
+home_bin: /home/{{ user }}/bin
 
 github_user: ant1k9
 github_token:

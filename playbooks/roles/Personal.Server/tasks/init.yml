@@ -8,7 +8,6 @@
         - curl
         - fish
         - git
-        - golang
         - jq
         - make
         - python
@@ -36,13 +35,13 @@
 
   - name: Create bin directory for user
     file:
-      dest: {{ home_bin }}
+      dest: "{{ home_bin }}"
       state: directory
 
   - name: Add bin to path
     shell: |
       test -z "$(grep '{{ home_bin }}' ~/.bashrc)" &&
-        echo -e "export PATH=$PATH:{{ home_bin }}\nexport EDITOR=vim" >> ~/.bashrc
+        echo "export PATH=$PATH:{{ home_bin }}\nexport EDITOR=vim" >> ~/.bashrc
       test -z "$(grep '{{ home_bin }}' ~/.config/fish/config.fish)" &&
-        echo -e "export PATH=$PATH:{{ home_bin }}\nexport EDITOR=vim" >> ~/.config/fish/config.fish
+        echo "export PATH=$PATH:{{ home_bin }}\nexport EDITOR=vim" >> ~/.config/fish/config.fish
     ignore_errors: yes

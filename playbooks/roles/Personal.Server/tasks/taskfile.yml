@@ -23,7 +23,7 @@
       src: templates/taskfile.env
       dest: "~/.config/task/.env"
       owner: "{{ user }}"
-      group: "{{ user }}"      
+      group: "{{ user }}"
       mode: "0644"
 
   - name: Update user in the Taskfile.yml

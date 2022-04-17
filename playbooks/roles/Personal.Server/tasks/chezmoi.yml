@@ -7,3 +7,7 @@
   - name: Pull the repo
     shell:
       cmd: ~/bin/chezmoi init https://github.com/ant1k9/dotfiles
+
+  - name: Apply configs
+    shell:
+      cmd: ~/bin/chezmoi apply

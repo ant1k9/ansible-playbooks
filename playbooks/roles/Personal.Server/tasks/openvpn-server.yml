@@ -9,6 +9,13 @@
         - easy-rsa
     become: yes
 
+  - name: Install python packages
+    shell: |
+      pip install "{{ item }}"
+    with_items:
+      - pexpect
+    become: yes
+
   - name: Init pki folder
     shell:
       cmd: |
@@ -81,14 +88,6 @@
       - Restart the OpenVPN service
     become: yes
 
-  - name: Config nat for openvpn
-    ansible.builtin.iptables:
-      table: nat
-      chain: POSTROUTING
-      out_interface: eth0
-      jump: MASQUERADE
-    become: yes
-
   - name: Config accept for requests
     ansible.builtin.iptables:
       chain: FORWARD
@@ -103,6 +102,15 @@
       match: state
       ctstate: RELATED,ESTABLISHED
       jump: ACCEPT
+    become: yes
+
+  - name: Config nat for openvpn
+    ansible.builtin.iptables:
+      table: nat
+      chain: POSTROUTING
+      src_range: "172.50.0.0-172.50.0.255"
+      dst_range: "!172.50.0.0-172.50.0.255"
+      jump: MASQUERADE
     become: yes
 
   - name: Config ip forwarding

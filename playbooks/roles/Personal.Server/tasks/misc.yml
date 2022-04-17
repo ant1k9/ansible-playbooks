@@ -3,6 +3,7 @@
     shell:
       cmd: |
         mkdir -p ~/.config/fish/completions
+        mkdir -p ~/.local/share/agile-cli
         ./install.fish misc
         ./install.fish dropbox
         ./install.fish newsletter
@@ -11,13 +12,14 @@
   - name: Install additional utilities
     shell:
       cmd: |
-        GOBIN={{ home_bin }} go get github.com/ericchiang/pup
-        GOBIN={{ home_bin }} go get github.com/ant1k9/deposit-watcher/cmd/rotate-backups
+        GOBIN={{ home_bin }} go get -u github.com/ericchiang/pup
+        GOBIN={{ home_bin }} go get -u github.com/ant1k9/deposit-watcher/cmd/rotate-backups
 
   - name: Download the latest links db dump
     shell:
       cmd: |
         ~/bin/gotask -t ~/.config/task/Taskfile.yml update-token
+        whoami
         DUMP_FILE=$( \
           curl -X POST https://api.dropboxapi.com/2/files/list_folder \
             -H "Authorization: Bearer $(cat /tmp/token)" \
@@ -26,7 +28,7 @@
             | jq '.entries | last | .path_lower' | tr -d '"'
         )
         DUMP_FILE="/tmp/$(basename $DUMP_FILE)"
-        DROPBOX_DIRECTORY=/links DROPBOX_TOKEN=$(cat /tmp/token) load-from-dropbox "$DUMP_FILE"
+        PATH=$PATH:{{ home_bin }} DROPBOX_DIRECTORY=/links DROPBOX_TOKEN=$(cat /tmp/token) load-from-dropbox "$DUMP_FILE"
         mv $DUMP_FILE /tmp/links.db.zip
 
   - name: Extract links.db archive

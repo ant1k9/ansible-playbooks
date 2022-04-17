@@ -4,7 +4,7 @@ deploy-rocket:
 
 .PHONY: personal-server
 personal-server:
-	@ansible-playbook -i playbooks/inventory playbooks/personal_server.yml -v \
+	@ansible-playbook -i playbooks/inventory playbooks/personal_server.yml -K -v \
 		-e github_token=${GITHUB_TOKEN} \
 		-e dropbox_refresh_token=${DROPBOX_REFRESH_TOKEN} \
 		-e dropbox_credentials=${DROPBOX_CREDENTIALS} \
