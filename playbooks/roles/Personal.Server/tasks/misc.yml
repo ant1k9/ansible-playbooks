@@ -60,4 +60,4 @@
       name: "newsletter send"
       minute: "15,35,55"
       hour: "6-20"
-      job: "cd /home/{{ user }}/misc/newsletter && TELEGRAM_CHANNEL={{ newsletter_channel }} TELEGRAM__BOT_TOKEN={{ telegram_bot_token }} ./generate.fish send"
+      job: "cd /home/{{ user }}/misc/newsletter && TELEGRAM_CHANNEL={{ newsletter_channel }} TELEGRAM_BOT_TOKEN={{ telegram_bot_token }} ./generate.fish send"

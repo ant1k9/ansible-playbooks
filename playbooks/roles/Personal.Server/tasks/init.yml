@@ -15,6 +15,7 @@
         - sqlite3
         - unzip
         - vim
+        - zip
     become: yes
 
   - name: Install python packages

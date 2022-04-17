@@ -11,7 +11,7 @@
       name: "check dirs"
       minute: "20"
       hour: "19"
-      job: "{{ home_bin }}/gotask -t ~/.config/task/Taskfile.yml load_cloud_data &>> /tmp/log.err"
+      job: "{{ home_bin }}/gotask -t ~/.config/task/Taskfile.yml load-cloud-data &>> /tmp/log.err"
 
   - name: Get private Taskfile.yml
     ansible.builtin.git:
