@@ -119,3 +119,15 @@
       value: '1'
       sysctl_set: yes
     become: yes
+
+  - name: Save iptables rules
+    shell: |
+      iptables-save > /etc/iptables.conf
+    become: yes
+
+  - name: Restore iptables config on reboot
+    ansible.builtin.cron:
+      name: "restore iptables"
+      special_time: reboot
+      job: "sudo iptables-restore < /etc/iptables.conf"
+    become: yes
