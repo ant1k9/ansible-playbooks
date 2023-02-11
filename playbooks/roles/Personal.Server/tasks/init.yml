@@ -32,7 +32,6 @@
       dest: "{{ item | regex_replace('^.*/(.*)$', '\\1') }}"
     with_items:
       - https://github.com/ant1k9/misc
-      - https://github.com/ant1k9/blog-notifier
 
   - name: Create bin directory for user
     file:

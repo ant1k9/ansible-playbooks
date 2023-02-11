@@ -1,0 +1,31 @@
+---
+
+  - name: Download the latest links db dump
+    shell:
+      cmd: |
+        ~/bin/gotask -t ~/.config/task/Taskfile.yml update-token
+        DUMP_FILE=$( \
+          curl -X POST https://api.dropboxapi.com/2/files/list_folder \
+            -H "Authorization: Bearer $(cat /tmp/token)" \
+            -H "Content-Type: application/json" \
+            -d '{"path": "/blog-notifier-entertainment"}' \
+            | jq '.entries | last | .path_lower' | tr -d '"'
+        )
+        curl -X POST https://content.dropboxapi.com/2/files/download \
+          -H "Authorization: Bearer $(cat /tmp/token)" \
+          -H "Dropbox-API-Arg: {\"path\": \"$DUMP_FILE\"}" \
+          -o ~/blog-notifier/entertainment.sqlite3
+
+  - name: Set crons for blog-notifier-entertainment
+    ansible.builtin.cron:
+      name: "Crawl entertainment blogs"
+      minute: "0"
+      hour: "0,10,13,16,19,22"
+      job: "cd /home/{{ user }}/blog-notifier && NOTIFIER_DB=entertainment.sqlite3 NOTIFIER_CONFIG=entertainment.credentials.yml ./blog_notifier.py -crawl"
+
+  - name: Prepare config for blog-notifier-entertainment
+    vars:
+      blogs_channel: "{{ lookup('ansible.builtin.env', 'BLOGS_ENTERTAINMENT_CHANNEL') }}"
+    template:
+      src: templates/blogs_credentials.yml
+      dest: ~/blog-notifier/entertainment.credentials.yml

@@ -1,5 +1,11 @@
 ---
 
+  - name: Clone repos
+    ansible.builtin.git:
+      repo:  https://github.com/ant1k9/blog-notifier
+      dest: blog-notifier
+      update: no
+
   - name: Install python packages
     shell: |
       pip install -r ~/blog-notifier/requirements.txt
@@ -34,6 +40,8 @@
       job: "cd /home/{{ user }}/blog-notifier && ./blog_notifier.py -crawl"
 
   - name: Prepare config for blog-notifier
+    vars:
+      blogs_channel: "{{ lookup('ansible.builtin.env', 'BLOGS_CHANNEL') }}"
     template:
       src: templates/blogs_credentials.yml
       dest: ~/blog-notifier/credentials.yml

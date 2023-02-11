@@ -19,6 +19,9 @@
   - include: knowledge-map.yml
     tags: blogs-notifier
 
+  - include: blogs-notifier-entertainment.yml
+    tags: blogs-notifier
+
   - include: chezmoi.yml
     tags: chezmoi.yml
 
