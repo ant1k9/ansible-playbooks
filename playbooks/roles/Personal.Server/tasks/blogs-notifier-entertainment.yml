@@ -1,9 +1,8 @@
 ---
-
   - name: Download the latest links db dump
     shell:
       cmd: |
-        ~/bin/gotask -t ~/.config/task/Taskfile.yml update-token
+        ~/bin/go-task -t ~/.config/task/Taskfile.yml update-token
         DUMP_FILE=$( \
           curl -X POST https://api.dropboxapi.com/2/files/list_folder \
             -H "Authorization: Bearer $(cat /tmp/token)" \
