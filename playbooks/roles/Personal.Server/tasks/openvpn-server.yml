@@ -74,6 +74,8 @@
     become: yes
 
   - name: Copy openvpn server config
+    vars:
+      local_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
     template:
       src: templates/openvpn-server.conf
       dest: /etc/openvpn/server/server.conf
