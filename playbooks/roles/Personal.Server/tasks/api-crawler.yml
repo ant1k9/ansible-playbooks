@@ -1,0 +1,76 @@
+---
+  - name: Install PostgreSQL
+    apt:
+      state: present
+      update_cache: yes
+      pkg:
+        - postgresql
+    become: yes
+
+  - name: Trust local users for Postgres
+    shell: |
+      pg_hba_file=$(find / -name pg_hba.conf | head -1)
+      sed -i '/local\s\+all\s\+postgres\s\+peer/d' "$pg_hba_file"
+      sed -i '/local\s\+all\s\+all\s\+peer/s/.*/local  all all trust/' "$pg_hba_file"
+      systemctl restart postgresql
+    become: yes
+
+  - name: Clone repo
+    ansible.builtin.git:
+      repo:  https://github.com/ant1k9/api-crawler
+      dest: api-crawler
+      update: no
+
+  - name: Create database and user for api-crawler
+    shell: |
+      cd api-crawler
+      psql -Upostgres -c "CREATE DATABASE \"{{ api_crawler_db_name }}\";"
+      psql -Upostgres -c "CREATE USER \"{{ api_crawler_db_user }}\" WITH LOGIN;"
+      psql -Upostgres -c "ALTER USER \"{{ api_crawler_db_user }}\" WITH PASSWORD '{{ api_crawler_db_user_password }}';"
+      psql -Upostgres -c "GRANT ALL ON DATABASE \"{{ api_crawler_db_name }}\" to \"{{ api_crawler_db_user }}\";"
+
+  - name: Compile api-crawler binary
+    shell: |
+      cd api-crawler
+      make build
+
+  - name: Download the latest db dump
+    shell:
+      cmd: |
+        ~/bin/go-task -t ~/.config/task/Taskfile.yml update-token
+        DUMP_FILE=$( \
+          curl -X POST https://api.dropboxapi.com/2/files/list_folder \
+            -H "Authorization: Bearer $(cat /tmp/token)" \
+            -H "Content-Type: application/json" \
+            -d '{"path": "/api-crawler"}' \
+            | jq '.entries | last | .path_lower' | tr -d '"'
+        )
+        curl -X POST https://content.dropboxapi.com/2/files/download \
+          -H "Authorization: Bearer $(cat /tmp/token)" \
+          -H "Dropbox-API-Arg: {\"path\": \"$DUMP_FILE\"}" \
+          -o /tmp/api-crawler.dump.zip
+
+  - name: Extract api-crawler dump archive
+    ansible.builtin.unarchive:
+      src: /tmp/api-crawler.dump.zip
+      dest: /tmp
+      remote_src: yes
+
+  - name: Restore database data
+    shell: |
+      pg_restore -C \
+        -d 'postgres://{{ api_crawler_db_user }}:{{ api_crawler_db_user_password }}@127.0.0.1:5432/{{ api_crawler_db_name }}' \
+        /tmp/tmp/*.dump
+    ignore_errors: true
+
+  - name: Set crons for crawling shares
+    ansible.builtin.cron:
+      name: "Crawl shares"
+      minute: "0"
+      hour: "0"
+      job: "/home/antik/bin/go-task -t ~/.config/task/Taskfile.yml update-token load-data-crawler >> /tmp/log.err"
+
+  - name: Prepare config for crawling shares
+    template:
+      src: templates/api-crawler.config.yml
+      dest: ~/api-crawler/config.yml

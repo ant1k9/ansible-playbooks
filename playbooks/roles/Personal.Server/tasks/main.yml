@@ -30,3 +30,6 @@
 
   - include: openvpn-client.yml
     tags: openvpn
+
+  - include: api-crawler.yml
+    tags: api-crawler

@@ -1,3 +1,5 @@
+TAGS=all
+
 .PHONY: deploy-rocket
 deploy-rocket:
 	@ansible-playbook -i playbooks/inventory playbooks/rocket_chat.yml -v --become
@@ -15,7 +17,8 @@ personal-server:
 		-e password=${PERSONAL_SERVER_PASSWORD} \
 		-e openvpn_ca_password="${PERSONAL_SERVER_PASSWORD}" \
 		-e openvpn_client_name="${PERSONAL_SERVER_USER}" \
-		-e openvpn_client_password="${PERSONAL_SERVER_PASSWORD}"
+		-e openvpn_client_password="${PERSONAL_SERVER_PASSWORD}" \
+		-t $(TAGS)
 
 .PHONY: personal-server-local
 personal-server-local:
@@ -26,13 +29,16 @@ personal-server-local:
 		-e dropbox_credentials=${DROPBOX_CREDENTIALS} \
 		-e blogs_channel=${BLOGS_CHANNEL} \
 		-e newsletter_channel=${NEWSLETTER_CHANNEL} \
-		-e telegram_bot_token=${TELEGRAM_BOT_TOKEN}
+		-e telegram_bot_token=${TELEGRAM_BOT_TOKEN} \
+		-t $(TAGS)
 
 .PHONY: local-environment
 local-environment:
-	@ansible-playbook -i playbooks/inventory playbooks/local_environment.yml -vK
+	@ansible-playbook -i playbooks/inventory playbooks/local_environment.yml -vK \
+		-t $(TAGS)
 
 .PHONY: local-environment-vm
 local-environment-vm:
 	@ansible-playbook -i playbooks/inventory playbooks/local_environment_vm.yml -v \
-		--ssh-common-args="-i  ./tmp/.vagrant/machines/default/libvirt/private_key -l vagrant"
+		--ssh-common-args="-i  ./tmp/.vagrant/machines/default/libvirt/private_key -l vagrant" \
+		-t $(TAGS)

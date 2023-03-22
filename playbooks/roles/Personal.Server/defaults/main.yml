@@ -19,3 +19,7 @@ openvpn_client_password: my-password
 blogs_channel:
 newsletter_channel:
 telegram_bot_token:
+
+api_crawler_db_name: api-crawler
+api_crawler_db_user: api-crawler-user
+api_crawler_db_user_password: api-crawler-user-password
