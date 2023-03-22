@@ -15,6 +15,7 @@ personal-server:
 		-e telegram_bot_token=${TELEGRAM_BOT_TOKEN} \
 		-e user=${PERSONAL_SERVER_USER} \
 		-e password=${PERSONAL_SERVER_PASSWORD} \
+		-e db_user_password=${DB_USER_PASSWORD} \
 		-e openvpn_ca_password="${PERSONAL_SERVER_PASSWORD}" \
 		-e openvpn_client_name="${PERSONAL_SERVER_USER}" \
 		-e openvpn_client_password="${PERSONAL_SERVER_PASSWORD}" \

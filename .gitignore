@@ -2,4 +2,4 @@
 
 *.retry
 
-
+ansible.secrets.zip
