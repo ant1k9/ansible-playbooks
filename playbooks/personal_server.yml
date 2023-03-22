@@ -5,5 +5,4 @@
     roles:
       - Personal.Server
 
-    environment:
-      TASKDDATA: /var/taskd
+    environment: []

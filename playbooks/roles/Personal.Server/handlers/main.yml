@@ -1,10 +1,4 @@
 ---
-  - name: Start taskd server
-    shell:
-      cmd: |
-        taskdctl start
-        ps -leaf | grep taskd
-
   - name: Reload the NGINX service
     ansible.builtin.systemd:
       name: nginx

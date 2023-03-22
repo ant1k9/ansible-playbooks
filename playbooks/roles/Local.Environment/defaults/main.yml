@@ -1,5 +1,4 @@
 ---
-
 user: vagrant
 home_prefix: {{ "/home/" if "macos" in ansible_distribution else "/Users/" }}
 home: "{{ home_prefix }}{{ user }}"
@@ -9,5 +8,3 @@ brew_bin: /home/linuxbrew/.linuxbrew/bin
 cargo_bin: "{{ home }}/.cargo/bin"
 go_bin: "{{ home }}/go/bin"
 path: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:{{ home_bin }}:{{ cargo_bin }}:{{ brew_bin }}:{{ go_bin }}"
-
-taskd_user: ant1k9

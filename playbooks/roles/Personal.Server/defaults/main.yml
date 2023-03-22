@@ -10,9 +10,6 @@ github_token:
 dropbox_refresh_token:
 dropbox_credentials:
 
-taskd_source_dir: ~/taskd-1.1.0
-taskd_user: ant1k9
-
 openvpn_server_name: my-openvpn
 openvpn_ca_password: my-password
 openvpn_path_easyrsa: /usr/share/easy-rsa

@@ -1,20 +1,4 @@
 ---
-
-  # Need to add server and credentials manually
-  - name: Copy taskd config
-    template:
-      src: templates/taskrc
-      dest: $HOME/.taskrc
-    tags:
-      - config
-
-  - name: Create task config directory
-    file:
-      path: $HOME/.task
-      state: directory
-    tags:
-      - config
-
   # Need to copy openvpn config manually
   - name: Install openvpn
     shell:
