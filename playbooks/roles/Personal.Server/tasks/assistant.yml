@@ -1,0 +1,60 @@
+---
+  - name: Clone repo
+    ansible.builtin.git:
+      repo:  https://github.com/ant1k9/assistant
+      dest: assistant
+      update: no
+
+  - name: Create database and user for assistant
+    shell: |
+      psql -Upostgres -c "CREATE DATABASE \"{{ assistant_db_name }}\";"
+      psql -Upostgres -c "CREATE USER \"{{ assistant_db_user }}\" WITH LOGIN;"
+      psql -Upostgres -c "ALTER USER \"{{ assistant_db_user }}\" WITH PASSWORD '{{ assistant_db_user_password }}';"
+      psql -Upostgres -c "GRANT ALL ON DATABASE \"{{ assistant_db_name }}\" TO \"{{ assistant_db_user }}\";"
+
+  - name: Install packages from requirements.txt
+    shell: |
+      cd assistant
+      pip3 install -r requirements.txt
+
+  - name: Download the latest db dump
+    shell:
+      cmd: |
+        ~/bin/go-task -t ~/.config/task/Taskfile.yml update-token
+        DUMP_FILE=$( \
+          curl -X POST https://api.dropboxapi.com/2/files/list_folder \
+            -H "Authorization: Bearer $(cat /tmp/token)" \
+            -H "Content-Type: application/json" \
+            -d '{"path": "/assistant"}' \
+            | jq '.entries | last | .path_lower' | tr -d '"'
+        )
+        curl -X POST https://content.dropboxapi.com/2/files/download \
+          -H "Authorization: Bearer $(cat /tmp/token)" \
+          -H "Dropbox-API-Arg: {\"path\": \"$DUMP_FILE\"}" \
+          -o /tmp/assistant.dump.zip
+
+  - name: Extract assistant dump archive
+    ansible.builtin.unarchive:
+      src: /tmp/assistant.dump.zip
+      dest: /tmp
+      remote_src: yes
+
+  - name: Restore database data
+    shell: |
+      pg_restore -C \
+        -d 'postgres://{{ assistant_db_user }}:{{ assistant_db_user_password }}@127.0.0.1:5432/{{ assistant_db_name }}' \
+        /tmp/tmp/*.dump
+    ignore_errors: true
+
+  - name: Grant rights on database to custom user
+    shell: |
+      psql -Upostgres -c "CREATE USER \"{{ user }}\" WITH LOGIN;"
+      psql -Upostgres -c "ALTER USER \"{{ user }}\" WITH PASSWORD '{{ db_user_password }}';"
+      psql -Upostgres -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{ user }}\";" "{{ assistant_db_name }}"
+
+  - name: Set crons for crawling jobs
+    ansible.builtin.cron:
+      name: "Crawl assistant"
+      hour: "0"
+      minute: "10"
+      job: "/home/antik/bin/go-task -t ~/.config/task/Taskfile.yml update-token load-data-assistant >> /tmp/log.err"

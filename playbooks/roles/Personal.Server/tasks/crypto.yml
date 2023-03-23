@@ -12,12 +12,6 @@
       psql -Upostgres -c "ALTER USER \"{{ crypto_db_user }}\" WITH PASSWORD '{{ crypto_db_user_password }}';"
       psql -Upostgres -c "GRANT ALL ON DATABASE \"{{ crypto_db_name }}\" TO \"{{ crypto_db_user }}\";"
 
-  - name: Grant rights on database to custom user
-    shell: |
-      psql -Upostgres -c "CREATE USER \"{{ user }}\" WITH LOGIN;"
-      psql -Upostgres -c "ALTER USER \"{{ user }}\" WITH PASSWORD '{{ db_user_password }}';"
-      psql -Upostgres -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{ user }}\";" "{{ crypto_db_name }}"
-
   - name: Compile crypto-watch binary
     shell: |
       cd crypto-watch
@@ -52,9 +46,15 @@
         /tmp/tmp/*.dump
     ignore_errors: true
 
-  - name: Set crons for crawling shares
+  - name: Grant rights on database to custom user
+    shell: |
+      psql -Upostgres -c "CREATE USER \"{{ user }}\" WITH LOGIN;"
+      psql -Upostgres -c "ALTER USER \"{{ user }}\" WITH PASSWORD '{{ db_user_password }}';"
+      psql -Upostgres -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{ user }}\";" "{{ crypto_db_name }}"
+
+  - name: Set crons for crawling coins
     ansible.builtin.cron:
       name: "Crawl crypto"
-      minute: "0"
-      hour: "5"
+      hour: "0"
+      minute: "5"
       job: "/home/antik/bin/go-task -t ~/.config/task/Taskfile.yml update-token load-data-crypto >> /tmp/log.err"

@@ -14,6 +14,7 @@
     tags:
       - api-crawler
       - crypto
+      - assistant
 
   - include: nginx.yml
     tags: misc
@@ -41,3 +42,6 @@
 
   - include: crypto.yml
     tags: crypto
+
+  - include: assistant.yml
+    tags: assistant

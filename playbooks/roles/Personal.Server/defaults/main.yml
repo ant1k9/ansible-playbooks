@@ -28,4 +28,8 @@ crypto_db_name: crypto
 crypto_db_user: crypto
 crypto_db_user_password: crypto
 
+assistant_db_name: assistant
+assistant_db_user: assistant
+assistant_db_user_password: assistant
+
 db_user_password:

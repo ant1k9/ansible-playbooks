@@ -12,12 +12,6 @@
       psql -Upostgres -c "ALTER USER \"{{ api_crawler_db_user }}\" WITH PASSWORD '{{ api_crawler_db_user_password }}';"
       psql -Upostgres -c "GRANT ALL ON DATABASE \"{{ api_crawler_db_name }}\" TO \"{{ api_crawler_db_user }}\";"
 
-  - name: Grant rights on database to custom user
-    shell: |
-      psql -Upostgres -c "CREATE USER \"{{ user }}\" WITH LOGIN;"
-      psql -Upostgres -c "ALTER USER \"{{ user }}\" WITH PASSWORD '{{ db_user_password }}';"
-      psql -Upostgres -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{ user }}\";" "{{ api_crawler_db_name }}"
-
   - name: Compile api-crawler binary
     shell: |
       cd api-crawler
@@ -55,9 +49,15 @@
   - name: Set crons for crawling shares
     ansible.builtin.cron:
       name: "Crawl shares"
-      minute: "0"
       hour: "0"
+      minute: "0"
       job: "/home/antik/bin/go-task -t ~/.config/task/Taskfile.yml update-token load-data-crawler >> /tmp/log.err"
+
+  - name: Grant rights on database to custom user
+    shell: |
+      psql -Upostgres -c "CREATE USER \"{{ user }}\" WITH LOGIN;"
+      psql -Upostgres -c "ALTER USER \"{{ user }}\" WITH PASSWORD '{{ db_user_password }}';"
+      psql -Upostgres -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{ user }}\";" "{{ api_crawler_db_name }}"
 
   - name: Prepare config for crawling shares
     template:
