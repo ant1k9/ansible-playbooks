@@ -1,23 +1,4 @@
 ---
-  - name: Install PostgreSQL
-    apt:
-      state: present
-      update_cache: yes
-      pkg:
-        - postgresql
-    become: yes
-
-  - name: Trust local users for Postgres
-    shell: |
-      pg_hba_file=$(find / -name pg_hba.conf | head -1)
-      postgresql_conf_file=$(echo -n "$pg_hba_file" | sed 's/pg_hba.conf/postgresql.conf/')
-      sed -i '/local\s\+all\s\+postgres\s\+peer/d' "$pg_hba_file"
-      sed -i '/local\s\+all\s\+all\s\+peer/s/.*/local  all all trust/' "$pg_hba_file"
-      echo 'host  all {{ user }} 0.0.0.0/0 md5' >> "$pg_hba_file"
-      sed -i "/#listen_addresses/s/.*/listen_addresses \= '*'/" "$postgresql_conf_file"
-      systemctl restart postgresql
-    become: yes
-
   - name: Clone repo
     ansible.builtin.git:
       repo:  https://github.com/ant1k9/api-crawler
@@ -26,7 +7,6 @@
 
   - name: Create database and user for api-crawler
     shell: |
-      cd api-crawler
       psql -Upostgres -c "CREATE DATABASE \"{{ api_crawler_db_name }}\";"
       psql -Upostgres -c "CREATE USER \"{{ api_crawler_db_user }}\" WITH LOGIN;"
       psql -Upostgres -c "ALTER USER \"{{ api_crawler_db_user }}\" WITH PASSWORD '{{ api_crawler_db_user_password }}';"

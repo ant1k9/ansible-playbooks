@@ -1,0 +1,60 @@
+---
+  - name: Clone repo
+    ansible.builtin.git:
+      repo:  https://github.com/ant1k9/crypto-watch
+      dest: crypto-watch
+      update: no
+
+  - name: Create database and user for crypto-watch
+    shell: |
+      psql -Upostgres -c "CREATE DATABASE \"{{ crypto_db_name }}\";"
+      psql -Upostgres -c "CREATE USER \"{{ crypto_db_user }}\" WITH LOGIN;"
+      psql -Upostgres -c "ALTER USER \"{{ crypto_db_user }}\" WITH PASSWORD '{{ crypto_db_user_password }}';"
+      psql -Upostgres -c "GRANT ALL ON DATABASE \"{{ crypto_db_name }}\" TO \"{{ crypto_db_user }}\";"
+
+  - name: Grant rights on database to custom user
+    shell: |
+      psql -Upostgres -c "CREATE USER \"{{ user }}\" WITH LOGIN;"
+      psql -Upostgres -c "ALTER USER \"{{ user }}\" WITH PASSWORD '{{ db_user_password }}';"
+      psql -Upostgres -c "GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{ user }}\";" "{{ crypto_db_name }}"
+
+  - name: Compile crypto-watch binary
+    shell: |
+      cd crypto-watch
+      make build
+
+  - name: Download the latest db dump
+    shell:
+      cmd: |
+        ~/bin/go-task -t ~/.config/task/Taskfile.yml update-token
+        DUMP_FILE=$( \
+          curl -X POST https://api.dropboxapi.com/2/files/list_folder \
+            -H "Authorization: Bearer $(cat /tmp/token)" \
+            -H "Content-Type: application/json" \
+            -d '{"path": "/crypto"}' \
+            | jq '.entries | last | .path_lower' | tr -d '"'
+        )
+        curl -X POST https://content.dropboxapi.com/2/files/download \
+          -H "Authorization: Bearer $(cat /tmp/token)" \
+          -H "Dropbox-API-Arg: {\"path\": \"$DUMP_FILE\"}" \
+          -o /tmp/crypto.dump.zip
+
+  - name: Extract crypto dump archive
+    ansible.builtin.unarchive:
+      src: /tmp/crypto.dump.zip
+      dest: /tmp
+      remote_src: yes
+
+  - name: Restore database data
+    shell: |
+      pg_restore -C \
+        -d 'postgres://{{ crypto_db_user }}:{{ crypto_db_user_password }}@127.0.0.1:5432/{{ crypto_db_name }}' \
+        /tmp/tmp/*.dump
+    ignore_errors: true
+
+  - name: Set crons for crawling shares
+    ansible.builtin.cron:
+      name: "Crawl crypto"
+      minute: "0"
+      hour: "5"
+      job: "/home/antik/bin/go-task -t ~/.config/task/Taskfile.yml update-token load-data-crypto >> /tmp/log.err"

@@ -24,4 +24,8 @@ api_crawler_db_name: api-crawler
 api_crawler_db_user: api-crawler-user
 api_crawler_db_user_password: api-crawler-user-password
 
+crypto_db_name: crypto
+crypto_db_user: crypto
+crypto_db_user_password: crypto
+
 db_user_password:

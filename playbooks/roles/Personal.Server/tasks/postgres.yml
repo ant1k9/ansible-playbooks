@@ -1,0 +1,19 @@
+---
+  - name: Install PostgreSQL
+    apt:
+      state: present
+      update_cache: yes
+      pkg:
+        - postgresql
+    become: yes
+
+  - name: Trust local users for Postgres
+    shell: |
+      pg_hba_file=$(find / -name pg_hba.conf | head -1)
+      postgresql_conf_file=$(echo -n "$pg_hba_file" | sed 's/pg_hba.conf/postgresql.conf/')
+      sed -i '/local\s\+all\s\+postgres\s\+peer/d' "$pg_hba_file"
+      sed -i '/local\s\+all\s\+all\s\+peer/s/.*/local  all all trust/' "$pg_hba_file"
+      grep '0.0.0.0/0' "$pg_hba_file" || echo 'host  all {{ user }} 0.0.0.0/0 md5' >> "$pg_hba_file"
+      sed -i "/#listen_addresses/s/.*/listen_addresses \= '*'/" "$postgresql_conf_file"
+      systemctl restart postgresql
+    become: yes

@@ -10,6 +10,11 @@
   - include: misc.yml
     tags: misc
 
+  - include: postgres.yml
+    tags:
+      - api-crawler
+      - crypto
+
   - include: nginx.yml
     tags: misc
 
@@ -33,3 +38,6 @@
 
   - include: api-crawler.yml
     tags: api-crawler
+
+  - include: crypto.yml
+    tags: crypto
