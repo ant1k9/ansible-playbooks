@@ -20,7 +20,7 @@
       name: "Crawl entertainment blogs"
       minute: "0"
       hour: "0,10,13,16,19,22"
-      job: "cd /home/{{ user }}/blog-notifier && NOTIFIER_DB=entertainment.sqlite3 NOTIFIER_CONFIG=entertainment.credentials.yml ./blog_notifier.py -crawl"
+      job: "cd /home/{{ user }}/blog-notifier && NOTIFIER_DB=entertainment.sqlite3 NOTIFIER_CONFIG=entertainment.credentials.yml python3 ./blog_notifier.py -crawl"
 
   - name: Prepare config for blog-notifier-entertainment
     vars:

@@ -36,7 +36,7 @@
       name: "Crawl blogs"
       minute: "0"
       hour: "0,9,12,15,18,21"
-      job: "cd /home/{{ user }}/blog-notifier && ./blog_notifier.py -crawl"
+      job: "cd /home/{{ user }}/blog-notifier && python3 ./blog_notifier.py -crawl"
 
   - name: Prepare config for blog-notifier
     vars:
