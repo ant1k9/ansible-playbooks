@@ -6,6 +6,7 @@
       pkg:
         - nginx
     become: yes
+    tags: nginx
 
   - name: Prepare NGINX configs
     template:
@@ -18,3 +19,4 @@
       - { src: htpasswd, dest: /etc/nginx/.htpasswd }
     become: yes
     notify: Reload the NGINX service
+    tags: nginx

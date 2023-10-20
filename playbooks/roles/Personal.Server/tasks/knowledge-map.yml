@@ -3,6 +3,7 @@
     ansible.builtin.git:
       repo: https://github.com/{{ github_user }}/knowledge-map
       dest: "~/knowledge-map"
+    tags: knowledge-map
 
   - name: Deploy the Knowledge Map App service file
     template:
@@ -12,3 +13,4 @@
       - Update service configuration
       - Restart the Knowledge Map service
     become: yes
+    tags: knowledge-map
